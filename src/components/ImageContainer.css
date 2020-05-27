@@ -1,16 +1,11 @@
-.image-container{
-    
-    border-radius: 20px;
-    display: flex;
-    
-    justify-content: center;
-    max-width: 80%;
-    max-height: 600px;
-}
 
-img {
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: auto;
+
+.bounding-box {
+    position: absolute;
+    box-shadow: 0 0 0 3px #149df2 inset;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    cursor: pointer;
   }
+
