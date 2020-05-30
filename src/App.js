@@ -34,8 +34,15 @@ function App() {
   const [link, setLink] = useState('')
   const [box, setBox] = useState({})
   const [route, setRoute] = useState('signin')
+  const [user, setUser] = useState({
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  })
 
-
+  
   const onInputChange = (event) => {
     setLink(event.target.value)
   }
@@ -44,7 +51,16 @@ function App() {
   const onRouteChange = (route) => {
     setRoute(route)
   }
+  
 
+  const loadUser = (data) => {
+    setUser({id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    })
+  }
 
   const CalculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box
@@ -69,6 +85,15 @@ function App() {
   const onPress = (event) => {
     app.models.predict("a403429f2ddf4b49b307e318f00e528b", link).then(
       function (response) {
+        if (response) {
+          fetch('http://localhost:3000/image',{
+            method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              id: user.id
+            })
+          }).then(response => response.json()).then(count => {setUser({...user, entries: count})})
+        }
         displayFaceBox(CalculateFaceLocation(response))
 
       },
@@ -79,7 +104,7 @@ function App() {
   }
   if (route === 'signin') {
     return (
-      <Signin onRouteChange={onRouteChange}/>
+      <Signin loadUser={loadUser} onRouteChange={onRouteChange}/>
     )
   } else if (route === 'home') {
     return (
@@ -87,14 +112,14 @@ function App() {
         <Particles params={particlesOptions} className='particles' />
         <Nav onRouteChange={onRouteChange}/>
         <Logo />
-        <Rank />
+        <Rank name={user.name} entries={user.entries}/>
         <Input onInputChange={onInputChange} onPress={onPress} />
         <ImageContainer link={link} box={box} />
       </div>)
   }
   else if (route === 'register') {
     return (
-      <Register onRouteChange={onRouteChange}/>
+      <Register onRouteChange={onRouteChange} loadUser={loadUser}/>
     )
   }
 }

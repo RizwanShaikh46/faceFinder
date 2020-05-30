@@ -1,6 +1,34 @@
-import React from 'react'
+import React,{useState} from 'react'
 
 const Signin = (props) => {
+ const [onSendEmail, setOnSendEmail] = useState('')
+ const [onSendPassword, setOnSendPassword] = useState('')
+
+const onEmailChange = (event) => {
+  setOnSendEmail(event.target.value)
+} 
+
+const onPasswordChange = (event) => {
+  setOnSendPassword(event.target.value)
+}
+
+const onSubmitButton = () => {
+  fetch('http://localhost:3000/signin',{
+    method: 'post',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      email: onSendEmail,
+      password: onSendPassword
+    })
+  }).then(response => response.json()).then(user => {
+    if (user.id) {
+      props.onRouteChange('home')
+      props.loadUser(user)
+    }
+  }) 
+  
+}
+
     return (
         <div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -15,6 +43,7 @@ const Signin = (props) => {
               <div className="mt3">
                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                 <input
+                onChange= {onEmailChange}
                   className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="email"
                   name="email-address"
@@ -26,6 +55,7 @@ const Signin = (props) => {
                 <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                 <input
                   className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                  onChange={onPasswordChange}
                   type="password"
                   name="password"
                   id="password"
@@ -35,7 +65,7 @@ const Signin = (props) => {
             </fieldset>
             <div className="">
               <input
-                onClick={() => props.onRouteChange('home')}
+                onClick={onSubmitButton}
                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                 type="submit"
                 value="Sign in"

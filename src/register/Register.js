@@ -1,7 +1,41 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 
 const Register = (props) => {
+
+    const [onSendEmail, setOnSendEmail] = useState('')
+    const [onSendPassword, setOnSendPassword] = useState('')
+    const [onSendName, setOnSendName] = useState('')
+
+    const onNameChange = (event) => {
+        setOnSendName(event.target.value)
+    }
+   const onEmailChange = (event) => {
+     setOnSendEmail(event.target.value)
+   } 
+   
+   const onPasswordChange = (event) => {
+     setOnSendPassword(event.target.value)
+   }
+   
+   const onSubmitButton = () => {
+     fetch('http://localhost:3000/register',{
+       method: 'post',
+       headers: {'Content-Type': 'application/json'},
+       body: JSON.stringify({
+         name: onSendName,    
+         email: onSendEmail,
+         password: onSendPassword
+       })
+     }).then(response => response.json()).then(user => {
+       if (user) {
+           props.loadUser(user)
+         props.onRouteChange('home')
+       }
+     }) 
+     
+   }
+
     return (<div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button onClick={() => props.onRouteChange('signin')} style={{ color: '#ff7b73' }} className='f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib hot-pink ma3 shadow-2 bg-color'>Sign In</button>
@@ -15,6 +49,7 @@ const Register = (props) => {
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
                             <input
+                                onChange={onNameChange}
                                 className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                                 type="text"
                                 name="name"
@@ -25,6 +60,7 @@ const Register = (props) => {
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                             <input
+                                onChange={onEmailChange}
                                 className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                                 type="email"
                                 name="email-address"
@@ -35,6 +71,7 @@ const Register = (props) => {
                         <div className="mv3">
                             <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                             <input
+                                onChange={onPasswordChange}
                                 className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                                 type="password"
                                 name="password"
@@ -45,7 +82,7 @@ const Register = (props) => {
                     </fieldset>
                     <div className="">
                         <input
-                            onClick={() => props.onRouteChange('home')}
+                            onClick={onSubmitButton}
                             className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                             type="submit"
                             value="Register"
