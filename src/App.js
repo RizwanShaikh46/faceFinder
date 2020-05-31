@@ -28,8 +28,6 @@ const particlesOptions = {
 }
 
 
-
-
 function App() {
   const [link, setLink] = useState('')
   const [box, setBox] = useState({})
@@ -42,6 +40,7 @@ function App() {
     joined: ''
   })
 
+
   
   const onInputChange = (event) => {
     setLink(event.target.value)
@@ -49,6 +48,7 @@ function App() {
 
 
   const onRouteChange = (route) => {
+
     setRoute(route)
   }
   
